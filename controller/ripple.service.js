@@ -16,21 +16,26 @@ module.exports = {
 
 
 async function getTransactionsByAccount(req, res) {
-    return await api.connect().then(() => {
-        return api.getTransactions(req.params.walletAddress);
-    }).then(transactions => {
-        res.json(transactions)
-    }).then(() => {
-        return api.disconnect();
-    }).then(() => {
-        console.log('done and disconnected.');
-    }).catch(err => {
-        res.send(err)
-    });
+//    api.connect().then(() => {
+//         return api.getTransactions(req.params.walletAddress);
+//     }).then(transactions => {
+//         res.json(transactions)
+//     }).then(() => {
+//         return api.disconnect();
+//     }).then(() => {
+//         console.log('done and disconnected.');
+//     }).catch(err => {
+//         res.send(err)
+//     });
+await api.connect();
+var transactions = await api.getTransactions(req.params.walletAddress);
+await res.json(transactions);
+await api.disconnect();
+console.log('done and disconnected.');
 }
 
 async function getBalanceByAccount(req, res) {
-    return await api.connect().then(() => {
+  /*  api.connect().then(() => {
         return api.getBalances(req.params.walletAddress);
     }).then(balances => {
         res.json(balances)
@@ -40,6 +45,18 @@ async function getBalanceByAccount(req, res) {
     }).catch(err => {
         res.send(err)
 
-    });
+    }); */
+    await api.connect();
+    var balances = await api.getBalances(req.params.walletAddress);
+    await res.json(balances);
+    await api.disconnect();
+    console.log('done and disconnected.');
+
 }
 
+function to(promise) {
+    return promise.then(data => {
+       return [null, data];
+    })
+    .catch(err => [err]);
+ }
