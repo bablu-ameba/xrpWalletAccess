@@ -14,19 +14,18 @@ module.exports = {
     getBalanceByAccount
 };
 
-
 async function getTransactionsByAccount(req, res) {
     try {
         await api.connect();
         var transactions = await api.getTransactions(req.params.walletAddress).catch(err => {
             res.send(err)
         });
+        await api.disconnect();
+        await res.json(transactions);
     } catch (errr) {
+        await api.disconnect();
         res.send(errr)
-
     }
-    await res.json(transactions);
-    await api.disconnect();
 }
 async function getBalanceByAccount(req, res) {
     try {
@@ -34,13 +33,12 @@ async function getBalanceByAccount(req, res) {
         var balances = await api.getBalances(req.params.walletAddress).catch(err => {
             res.send(err)
         });
+        await api.disconnect();
+        await res.json(balances);
 
     } catch (error) {
         res.send(error)
     }
-    await res.json(balances);
-    await api.disconnect();
     console.log('done and disconnected.');
-
 }
 
